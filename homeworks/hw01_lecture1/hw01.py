@@ -69,10 +69,7 @@ def exact_sum(values):
         >>> exact_sum(['0.1', '0.2'])
         Fraction(3, 10)
     """
-    total = Fraction(0)
-    for value in values:
-        total += Fraction(value)
-    return total
+    return sum((Fraction(value) for value in values), Fraction(0))
 
 
 # ---------------------------------------------------------------------------
@@ -127,11 +124,7 @@ def active_flags(mask, names):
     бита справа). Им соответствуют names[1] = 'write' и
     names[3] = 'delete'.
     """
-    flags = []
-    for bit, name in enumerate(names):
-        if mask & (1 << bit):
-            flags.append(name)
-    return flags
+    return [name for bit, name in enumerate(names) if mask & (1 << bit)]
 
 
 # ---------------------------------------------------------------------------
@@ -247,10 +240,8 @@ def floor_and_truncated_division(a, b):
         >>> floor_and_truncated_division(-7, -2)
         (3, 3)
     """
-    floor_div = a // b
-    # int() от Fraction усекает дробную часть к нулю – то, что нужно
-    trunc_div = int(Fraction(a, b))
-    return floor_div, trunc_div
+    # int() от точного Fraction усекает дробную часть к нулю (как в C)
+    return a // b, int(Fraction(a, b))
 
 
 # ---------------------------------------------------------------------------

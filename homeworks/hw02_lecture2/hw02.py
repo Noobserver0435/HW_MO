@@ -70,10 +70,9 @@ def normalize_tokens(text):
         >>> normalize_tokens('The cat, the CAT and the dog! The cat.')
         ['the', 'cat', 'and', 'dog']
     """
-    lowered = text.lower()
-    cleaned = ''.join(char for char in lowered if char not in string.punctuation)
+    without_punctuation = text.lower().translate(str.maketrans('', '', string.punctuation))
     # dict.fromkeys сохраняет порядок первого появления и убирает повторы
-    return list(dict.fromkeys(cleaned.split()))
+    return list(dict.fromkeys(without_punctuation.split()))
 
 
 # ---------------------------------------------------------------------------
@@ -278,13 +277,10 @@ def moving_average(values, window):
     """
     if window <= 0 or window > len(values):
         return []
-    averages = []
-    for start in range(len(values) - window + 1):
-        window_sum = 0
-        for value in values[start:start + window]:
-            window_sum += value
-        averages.append(window_sum / window)
-    return averages
+    return [
+        sum(values[start:start + window]) / window
+        for start in range(len(values) - window + 1)
+    ]
 
 
 # ---------------------------------------------------------------------------
